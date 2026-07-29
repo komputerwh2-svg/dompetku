@@ -1,0 +1,66 @@
+<!-- views/rekap.html -->
+<div id="rekap-view" class="space-y-6 w-full animate__animated animate__fadeIn">
+    
+    <!-- Panel Saldo Utama (Full Width) -->
+    <div class="bg-white border border-gray-200/80 rounded-2xl p-5 shadow-xs w-full relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-blue-600"></div>
+        
+        <div class="space-y-2">
+            <div class="flex justify-between items-center text-blue-700 text-xs font-bold uppercase tracking-wider mb-1">
+                <span id="label-rekap-bulan">Saldo Dompet Bulan Ini</span>
+                <!-- Diselaraskan dengan fungsi modal arsip -->
+                <button type="button" aria-label="Buka Arsip Bulanan" onclick="if(typeof window.bukaModalArsip === 'function') { window.bukaModalArsip(); } else if(typeof openArsipModal === 'function') { openArsipModal(); }" class="text-blue-500 hover:text-blue-700 transition focus:outline-none">
+                    <i class="fas fa-wallet text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex justify-between items-end">
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">Saldo Saat Ini</p>
+                    <h2 id="txt-saldo-utama" class="text-3xl font-black text-gray-900 mt-0.5 tracking-tight">Rp 0</h2>
+                </div>
+                <div class="text-right pb-1">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Sisa Bulan Lalu</p>
+                    <p id="txt-saldo-lalu" class="text-xs font-bold text-gray-600 mt-0.5">Rp 0</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Details Pemasukan & Pengeluaran -->
+        <div class="grid grid-cols-2 gap-2.5 mt-4 pt-3 border-t border-gray-100 text-xs">
+            <div class="bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-100/50 relative group">
+                <div class="flex justify-between items-center">
+                    <p class="text-emerald-700/80 font-bold uppercase tracking-wider text-[9px]">Pemasukan</p>
+                    <button type="button" aria-label="Detail Pemasukan" onclick="if(typeof bukaModalDetailPemasukan === 'function') bukaModalDetailPemasukan()" class="text-emerald-600 hover:text-emerald-800 transition p-0.5 focus:outline-none">
+                        <i class="fas fa-info-circle text-[11px]"></i>
+                    </button>
+                </div>
+                <p id="txt-pemasukan" class="font-black text-emerald-600 mt-0.5 text-sm">Rp 0</p>
+            </div>
+            
+            <div class="bg-rose-50/60 p-2.5 rounded-xl border border-rose-100/50">
+                <p class="text-rose-700/80 font-bold uppercase tracking-wider text-[9px]">Pengeluaran</p>
+                <p id="txt-pengeluaran" class="font-black text-rose-600 mt-0.5 text-sm">Rp 0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Riwayat Transaksi -->
+    <div class="bg-white border border-gray-200/80 rounded-2xl p-5 shadow-xs w-full relative overflow-hidden min-h-[180px]">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Riwayat Transaksi</h3>
+            <!-- Diselaraskan dengan fungsi modal arsip/riwayat -->
+            <button type="button" onclick="if(typeof openArsipModal === 'function') { openArsipModal(); } else if(typeof window.bukaModalArsip === 'function') { window.bukaModalArsip(); }" class="text-xs text-blue-600 font-bold hover:underline transition focus:outline-none">
+                Filter Riwayat
+            </button>
+        </div>
+        
+        <!-- Container Item Riwayat (Diisi via JS) -->
+        <div id="container-riwayat-transaksi" class="divide-y divide-gray-100">
+            <div class="text-center py-6 text-[11px] text-gray-400 font-medium">
+                <i class="fas fa-circle-notch fa-spin text-blue-500 mr-2"></i>Memuat riwayat transaksi...
+            </div>
+        </div>
+    </div>
+
+</div>
