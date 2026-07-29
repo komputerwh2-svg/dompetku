@@ -772,6 +772,284 @@
             </div>
         </div>
 
+        <!-- ================================================================== -->
+        <!-- MODAL PILIHAN TRANSAKSI TABUNGAN (MELAYANG DI TENGAH & ROUNDED)   -->
+        <!-- ================================================================== -->
+        <div id="modal-pilihan-tabungan" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-xs transition-opacity duration-300 p-4">
+            <!-- Kontainer Panel Melayang (Membulat Sempurna di Semua Sudut) -->
+            <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-xl transform transition-all duration-300 scale-100 animate__animated animate__zoomIn animate__fast">
+                
+                <!-- Header Modal -->
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Pilih Transaksi Tabungan</h3>
+                    </div>
+                    <button onclick="document.getElementById('modal-pilihan-tabungan').classList.add('hidden')" class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Menu Pilihan (Grid 3 Kolom) -->
+                <div class="grid grid-cols-3 gap-2 py-2">
+                    
+                    <!-- Tombol Pilihan 1: Mutasi Masuk / Antar Tabungan -->
+                    <button onclick="window.aksiBukaFormTabungan('mutasi_masuk')" class="flex flex-col items-center justify-center p-3 bg-emerald-50/60 hover:bg-emerald-50 border border-emerald-100 rounded-2xl text-center group transition">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xs shadow-sm group-hover:scale-105 transition-transform">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <span class="text-[11px] font-black text-emerald-800 mt-2">Mutasi</span>
+                        <span class="text-[8px] text-emerald-600 mt-0.5 leading-tight">Mutasi Saldo Tabungan</span>
+                    </button>
+
+                    <!-- Tombol Pilihan 2: Transaksi Keluar -->
+                    <button onclick="window.aksiBukaFormTabungan('transaksi_keluar')" class="flex flex-col items-center justify-center p-3 bg-purple-50/60 hover:bg-purple-50 border border-purple-100 rounded-2xl text-center group transition">
+                        <div class="w-9 h-9 rounded-xl bg-purple-500 text-white flex items-center justify-center text-xs shadow-sm group-hover:scale-105 transition-transform">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
+                        <span class="text-[11px] font-black text-purple-800 mt-2">Tarik Saldo</span>
+                        <span class="text-[8px] text-purple-600 mt-0.5 leading-tight">Dana Keluar Keperluan</span>
+                    </button>
+
+                    <!-- Tombol Pilihan 3: Buat / Ubah Target Tabungan -->
+                    <button onclick="window.aksiBukaFormTabungan('atur_target')" class="flex flex-col items-center justify-center p-3 bg-blue-50/60 hover:bg-blue-50 border border-blue-100 rounded-2xl text-center group transition">
+                        <div class="w-9 h-9 rounded-xl bg-blue-500 text-white flex items-center justify-center text-xs shadow-sm group-hover:scale-105 transition-transform">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <span class="text-[11px] font-black text-blue-800 mt-2">Atur Target</span>
+                        <span class="text-[8px] text-blue-600 mt-0.5 leading-tight">Ubah Batasan Target</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- 1. MODAL MUTASI DANA INTERNAL                                      -->
+        <!-- ================================================================== -->
+        <div id="modal-form-mutasi-tabungan" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-xs transition-opacity duration-300 p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-xl transform transition-all duration-300 scale-100 animate__animated animate__zoomIn animate__fast">
+                
+                <!-- Header -->
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Mutasi Saldo / Dana</h3>
+                            <p class="text-[9px] text-gray-400 font-medium">Pindahkan dana antar pos / dompet internal</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('modal-form-mutasi-tabungan').classList.add('hidden')" class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Form Input -->
+                <form id="form-mutasi-tabungan" class="space-y-3" onsubmit="window.eksekusiSimpanMutasi(event)">
+                    
+                    <!-- Tanggal Transaksi -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Tanggal Transaksi</label>
+                        <input type="date" id="mutasi-tanggal" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 transition" required>
+                    </div>
+
+                    <!-- Grid Asal & Tujuan -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- Mutasi Dari (Asal) -->
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Mutasi Dari</label>
+                            <select id="mutasi-asal" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 transition">
+                                <option value="dompet">💳 Dompet Utama</option>
+                                <option value="utama">🏦 Tabungan Utama</option>
+                                <option value="darurat">🚨 Tabungan Darurat</option>
+                            </select>
+                        </div>
+
+                        <!-- Untuk (Tujuan) -->
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Untuk (Tujuan)</label>
+                            <select id="mutasi-tujuan" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-2.5 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-emerald-500 transition">
+                                <option value="utama" selected>🏦 Tabungan Utama</option>
+                                <option value="darurat">🚨 Tabungan Darurat</option>
+                                <option value="dompet">💳 Dompet Utama</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Keterangan -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Keterangan / Catatan</label>
+                        <input type="text" id="mutasi-ket-tabungan" placeholder="Contoh: Sisihan gaji, pindah saldo" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition" required>
+                    </div>
+
+                    <!-- Nominal -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nominal Mutasi Tabungan</label>
+                        <input type="text" id="mutasi-nominal-display" placeholder="0" oninput="window.formatInputRibuan(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-emerald-500 transition" required>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button type="button" onclick="document.getElementById('modal-form-mutasi-tabungan').classList.add('hidden')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-2.5 rounded-xl text-xs transition">
+                            Batal
+                        </button>
+                        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
+                            Simpan Mutasi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- 2. MODAL TARIK SALDO / PENGELUARAN TABUNGAN                       -->
+        <!-- ================================================================== -->
+        <div id="modal-form-tarik-tabungan" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-xs transition-opacity duration-300 p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-xl transform transition-all duration-300 scale-100 animate__animated animate__zoomIn animate__fast">
+                
+                <!-- Header -->
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center text-xs">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Tarik Saldo Tabungan</h3>
+                            <p class="text-[9px] text-gray-400 font-medium">Mencatat pengeluaran yang diambil dari pos tabungan</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('modal-form-tarik-tabungan').classList.add('hidden')" class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Form Input -->
+                <form id="form-tarik-tabungan" class="space-y-3" onsubmit="window.eksekusiTarikSaldo(event)">
+                    
+                    <!-- Tanggal Transaksi -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Tanggal Tarik</label>
+                        <input type="date" id="tarik-tanggal" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-purple-500 transition" required>
+                    </div>
+
+                    <!-- Sumber Dana -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Sumber Tabungan</label>
+                        <select id="tarik-sumber-tabungan" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-purple-500 transition">
+                            <option value="utama">🏦 Tabungan Utama</option>
+                            <option value="darurat">🚨 Tabungan Darurat</option>
+                        </select>
+                    </div>
+
+                    <!-- Keterangan Keperluan -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Keterangan / Keperluan</label>
+                        <input type="text" id="tarik-ket-tabungan" placeholder="Contoh: Beli keperluan mendesak" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 placeholder-gray-400 focus:outline-none focus:border-purple-500 transition" required>
+                    </div>
+
+                    <!-- Nominal Keluar -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nominal Tarik Tabungan</label>
+                        <input type="text" id="tarik-nominal-display" placeholder="0" oninput="window.formatInputRibuan(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 transition" required>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button type="button" onclick="document.getElementById('modal-form-tarik-tabungan').classList.add('hidden')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-2.5 rounded-xl text-xs transition">
+                            Batal
+                        </button>
+                        <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
+                            Tarik Tabungan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- 3. MODAL ATUR TARGET / BATASAN DANA                               -->
+        <!-- ================================================================== -->
+        <div id="modal-form-target-tabungan" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-xs transition-opacity duration-300 p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-xl transform transition-all duration-300 scale-100 animate__animated animate__zoomIn animate__fast">
+                
+                <!-- Header -->
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-black text-gray-800 uppercase tracking-wider">Atur Target Batasan Dana</h3>
+                            <p class="text-[9px] text-gray-400 font-medium">Tentukan limit target capaian tabungan Anda</p>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('modal-form-target-tabungan').classList.add('hidden')" class="w-6 h-6 rounded-full bg-gray-100 text-gray-400 hover:text-gray-600 flex items-center justify-center transition">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Form Input -->
+                <form id="form-target-tabungan" class="space-y-3" onsubmit="window.eksekusiSimpanTarget(event)">
+                    
+                    <!-- Tanggal Perubahan / Pembaruan Target -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Tanggal Pembaruan</label>
+                        <input type="date" id="target-tanggal" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 focus:outline-none focus:border-blue-500 transition" required>
+                    </div>
+
+                    <!-- Target Tabungan Utama (Format Ribuan) -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Target Tabungan Utama (Rp)</label>
+                        <input type="text" id="target-nominal-utama-display" placeholder="0" oninput="window.formatInputRibuan(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 transition" required>
+                    </div>
+
+                    <!-- Target Tabungan Darurat (Format Ribuan) -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Target Tabungan Darurat (Rp)</label>
+                        <input type="text" id="target-nominal-darurat-display" placeholder="0" oninput="window.formatInputRibuan(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 transition" required>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <button type="button" onclick="document.getElementById('modal-form-target-tabungan').classList.add('hidden')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-2.5 rounded-xl text-xs transition">
+                            Batal
+                        </button>
+                        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
+                            Perbarui Target
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- CUSTOM tampilAlert MODAL                                          -->
+        <!-- ================================================================== -->
+        <div id="modal-tampilAlert" class="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 hidden backdrop-blur-xs transition-all duration-200 opacity-0">
+            <div class="bg-white rounded-2xl w-full max-w-xs overflow-hidden shadow-2xl transform scale-95 transition-all p-5 text-center space-y-4">
+                
+                <!-- Icon Dinamis -->
+                <div id="tampilAlert-icon-container" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto border shadow-xs">
+                    <i id="tampilAlert-icon" class="fas text-xl"></i>
+                </div>
+
+                <!-- Konten Teks -->
+                <div class="space-y-1">
+                    <h4 id="tampilAlert-title" class="text-sm font-black text-gray-800">Pemberitahuan</h4>
+                    <p id="tampilAlert-message" class="text-[11px] text-gray-400 leading-relaxed max-w-[220px] mx-auto">Pesan peringatan di sini...</p>
+                </div>
+                
+                <!-- Tombol Aksi -->
+                <button onclick="tutuptampilAlertKustom()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-md transition transform active:scale-95">
+                    Tutup
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <!-- ─── JAVASCRIPT MODULES ─── -->
@@ -781,5 +1059,6 @@
 
     <!-- 2. Main Controller/Router Script -->
     <script src="js/app.js"></script>
+
 </body>
 </html>
