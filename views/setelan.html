@@ -1,0 +1,92 @@
+<!-- views/setelan.html -->
+<div id="setelan-view" class="w-full animate__animated animate__fadeIn space-y-4">
+    
+    <!-- Profil Singkat / Banner Akun -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-5 text-white shadow-xs flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-lg font-black shadow-inner">
+                <span id="setelan-user-avatar">ID</span>
+            </div>
+            <div>
+                <h3 id="setelan-user-name" class="font-extrabold text-base tracking-tight leading-tight">Pengguna DompetQ</h3>
+                <p id="setelan-user-status" class="text-xs text-blue-100/80 font-medium">Lokal / Offline Mode</p>
+            </div>
+        </div>
+        <button type="button" 
+                onclick="if(typeof openLoginModal === 'function') openLoginModal()" 
+                class="px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-xl border border-white/20 text-xs font-bold transition active:scale-95 focus:outline-none">
+            Kelola Akun
+        </button>
+    </div>
+
+    <!-- Menu-Menu Setelan Utama -->
+    <div class="bg-white border border-gray-200/80 rounded-2xl p-2 shadow-xs divide-y divide-gray-100 text-sm font-semibold text-gray-700 w-full">
+        
+        <!-- Keamanan & PIN -->
+        <div onclick="if(typeof openPinModal === 'function') openPinModal()" 
+             class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50 rounded-xl transition group">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
+                    <i class="fas fa-shield-alt text-base"></i>
+                </div>
+                <span class="group-hover:text-blue-600 transition">Keamanan & PIN Sekuritas</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-gray-300 group-hover:text-blue-600 transition"></i>
+        </div>
+
+        <!-- Pengaturan BBM / Kendaraan -->
+        <div onclick="if(typeof bukaModalSetelanBBM === 'function') bukaModalSetelanBBM()" 
+             class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50 rounded-xl transition group">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition">
+                    <i class="fas fa-gas-pump text-base"></i>
+                </div>
+                <span class="group-hover:text-orange-600 transition">Pengaturan BBM & Kendaraan</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-gray-300 group-hover:text-orange-600 transition"></i>
+        </div>
+
+        <!-- Arsip Transaksi Bulanan -->
+        <div onclick="if(typeof openArsipModal === 'function') openArsipModal()" 
+             class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50 rounded-xl transition group">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">
+                    <i class="fas fa-archive text-base"></i>
+                </div>
+                <span class="group-hover:text-indigo-600 transition">Arsip Transaksi Bulanan</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-gray-300 group-hover:text-indigo-600 transition"></i>
+        </div>
+
+        <!-- Tentang Aplikasi -->
+        <div onclick="if(typeof openAboutModal === 'function') openAboutModal()" 
+             class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-gray-50 rounded-xl transition group">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition">
+                    <i class="fas fa-info-circle text-base"></i>
+                </div>
+                <span class="group-hover:text-emerald-600 transition">Tentang DompetQ</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-gray-300 group-hover:text-emerald-600 transition"></i>
+        </div>
+
+        <!-- Keluar / Logout -->
+        <div onclick="if(typeof prosesLogout === 'function') prosesLogout()" 
+             class="p-3.5 flex justify-between items-center cursor-pointer hover:bg-rose-50 rounded-xl transition text-rose-600 font-bold group">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition">
+                    <i class="fas fa-sign-out-alt text-base"></i>
+                </div>
+                <span>Keluar Akun</span>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-rose-300 group-hover:text-rose-600 transition"></i>
+        </div>
+
+    </div>
+
+    <!-- Info Versi -->
+    <div class="text-center py-2 text-gray-400 text-xs font-medium">
+        <p>DompetQ v0.0.1</p>
+    </div>
+
+</div>
