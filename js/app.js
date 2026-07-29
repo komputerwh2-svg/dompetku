@@ -1,3 +1,100 @@
+// =========================================================================
+// FITUR MODAL LOGIN & AUTENTIKASI UTAMA (app.js)
+// =========================================================================
+
+/**
+ * Membuka Modal Login
+ */
+function openLoginModal() {
+    const modal = document.getElementById('modal-login');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+/**
+ * Menutup Modal Login
+ */
+function tutupLoginModal() {
+    const modal = document.getElementById('modal-login');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+/**
+ * Handler Login dengan Akun Google
+ */
+function handleGoogleLogin() {
+    console.log("Memulai proses Login Google...");
+    // TODO: Hubungkan dengan SDK Firebase Auth / Supabase OAuth jika sudah ada
+    alert("Fitur Login Google siap dihubungkan ke backend!");
+    
+    // Simulasi berhasil login (opsional)
+    // tutupLoginModal();
+}
+
+/**
+ * Handler Login dengan Sidik Jari / Biometrik (WebAuthn API)
+ */
+async function loginDenganFingerprint() {
+    console.log("Memeriksa sensor biometrik...");
+    if (window.PublicKeyCredential) {
+        try {
+            // Contoh struktur pemanggilan biometrik dasar
+            alert("Sensor biometrik aktif. Silakan verifikasi sidik jari/perangkat Anda.");
+        } catch (err) {
+            console.error("Gagal verifikasi biometrik:", err);
+            alert("Verifikasi sidik jari gagal atau dibatalkan.");
+        }
+    } else {
+        alert("Perangkat atau browser ini belum mendukung autentikasi biometrik.");
+    }
+}
+
+/**
+ * Handler Pendaftaran Sidik Jari Baru
+ */
+function daftarkanFingerprint() {
+    alert("Fitur pendaftaran sidik jari siap dihubungkan.");
+}
+
+/**
+ * Mode Akses Cepat untuk Developer / Testing
+ */
+function masukModeDeveloperCepat() {
+    console.log("Masuk dengan Mode Developer");
+    
+    // Buka lock overlay jika ada
+    const lockOverlay = document.getElementById('auth-lock-overlay');
+    if (lockOverlay) {
+        lockOverlay.classList.add('hidden');
+    }
+    
+    tutupLoginModal();
+    alert("Berhasil masuk sebagai Mode Developer!");
+}
+
+/**
+ * Menampilkan Form Google dalam Modal (Tukar Tampilan)
+ */
+function tukarKeFormGoogle() {
+    const secBiometric = document.getElementById('sec-login-biometric');
+    const secGoogle = document.getElementById('sec-login-google');
+    
+    if (secBiometric && secGoogle) {
+        secBiometric.classList.add('hidden');
+        secGoogle.classList.remove('hidden');
+    }
+}
+
+/**
+ * Melewati Autentikasi Biometrik
+ */
+function lewatiBiometrik() {
+    tutupLoginModal();
+}
+
 /**
  * ============================================================================
  * DompetQ - Core Application Controller & Event Handlers (app.js)
@@ -9,21 +106,26 @@ const loadedScripts = {};
 
 // Inisialisasi Utama Aplikasi saat DOM Siap
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inisialisasi Tanggal Header
+    // 1. Update tanggal di header
     updateHeaderDate();
 
-    // 2. Set default periode pada input type month di modal-modal
-    initDefaultPeriodInputs();
+    // 2. Cek status login (contoh menggunakan localStorage)
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
 
-    // 3. Tampilkan Default Tab 'rekap' saat pertama kali dibuka
-    switchTab('rekap');
+    if (!isLoggedIn) {
+        // Jika BELUM login, langsung tampilkan modal login saat pertama dibuka
+        openLoginModal();
+    } else {
+        // Jika SUDAH login, baru muat tab default (misal: 'ringkasan')
+        switchTab('ringkasan');
+    }
 });
 
 /**
  * Memperbarui Teks Tanggal di Header Aplikasi
  */
 function updateHeaderDate() {
-    const elDate = document.querySelector('header p');
+    const elDate = document.getElementById('header-tanggal');
     if (elDate) {
         const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
         const today = new Date().toLocaleDateString('id-ID', options);
@@ -249,25 +351,141 @@ function bersihkanNotif() {
     openNotifModal();
 }
 
-// 3. Modal Otentikasi / Login
+// ==========================================
+// 3. MODAL OTENTIKASI & ASET LOGIKA AUTH
+// ==========================================
+
+/**
+ * Membuka Modal Login/Otentikasi
+ */
 function openLoginModal() {
     const modal = document.getElementById('modal-login');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        // Kembali ke form Google utama secara default saat dibuka
+        tukarKeFormGoogle();
+    }
 }
 
+/**
+ * Menutup Modal Login/Otentikasi
+ */
 function tutupLoginModal() {
     const modal = document.getElementById('modal-login');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
 }
 
+/**
+ * Memproses Login via Google Authentication
+ */
 function handleGoogleLogin() {
-    alert('Proses Autentikasi Google...');
+    // Tampilkan alert info kustom saat memproses login
+    bukaTampilAlertKustom('Autentikasi Google', 'Memproses Autentikasi Google...', 'info');
+    
+    // Buka kunci tampilan data rekap & transaksi pada UI
+    bukaKunciDataAuth();
+    
+    // Beri opsi/penawaran pendaftaran biometrik lokal setelah login Google berhasil
+    tampilkanPanelSetupBiometrik();
+}
+
+/**
+ * Memproses Otentikasi Cepat dengan Fingerprint / Biometrik
+ */
+function loginDenganFingerprint() {
+    // Memeriksa dukungan WebAuthn / Biometrik pada browser/perangkat
+    if (window.PublicKeyCredential) {
+        // Tampilkan status pemindaian
+        const quickLoginPanel = document.getElementById('biometric-quick-login');
+        if (quickLoginPanel && !quickLoginPanel.classList.contains('hidden')) {
+            // Jika dipanggil dari panel quick login
+            bukaTampilAlertKustom('Pemindaian Biometrik', 'Memindai Sidik Jari/Biometrik...', 'info');
+            bukaKunciDataAuth();
+            tutupLoginModal();
+        } else {
+            // Tampilkan panel khusus instruksi sidik jari
+            tampilkanPanelQuickFingerprint();
+        }
+    } else {
+        bukaTampilAlertKustom('Fitur Tidak Didukung', 'Fitur Biometrik/Sidik Jari tidak didukung pada perangkat atau browser ini.', 'warning');
+    }
+}
+
+/**
+ * Berpindah Tampilan ke Form Google Utama
+ */
+function tukarKeFormGoogle() {
+    const formContainer = document.getElementById('auth-form-container');
+    const setupPanel = document.getElementById('biometric-setup-panel');
+    const quickLogin = document.getElementById('biometric-quick-login');
+
+    if (formContainer) formContainer.classList.remove('hidden');
+    if (setupPanel) setupPanel.classList.add('hidden');
+    if (quickLogin) quickLogin.classList.add('hidden');
+}
+
+/**
+ * Tampilan Setup Biometrik Setelah Login
+ */
+function tampilkanPanelSetupBiometrik() {
+    const formContainer = document.getElementById('auth-form-container');
+    const setupPanel = document.getElementById('biometric-setup-panel');
+    const quickLogin = document.getElementById('biometric-quick-login');
+
+    if (formContainer) formContainer.classList.add('hidden');
+    if (setupPanel) setupPanel.classList.remove('hidden');
+    if (quickLogin) quickLogin.classList.add('hidden');
+}
+
+/**
+ * Tampilan Quick Fingerprint Login
+ */
+function tampilkanPanelQuickFingerprint() {
+    const formContainer = document.getElementById('auth-form-container');
+    const setupPanel = document.getElementById('biometric-setup-panel');
+    const quickLogin = document.getElementById('biometric-quick-login');
+
+    if (formContainer) formContainer.classList.add('hidden');
+    if (setupPanel) setupPanel.classList.add('hidden');
+    if (quickLogin) quickLogin.classList.remove('hidden');
+}
+
+/**
+ * Mendaftarkan Sidik Jari untuk Akses Cepat
+ */
+function daftarkanFingerprint() {
+    localStorage.setItem('dompetq_fingerprint_enabled', 'true');
+    bukaTampilAlertKustom('Berhasil', 'Biometrik/Sidik Jari berhasil didaftarkan untuk akses cepat!', 'success');
     tutupLoginModal();
 }
 
-function loginDenganFingerprint() {
-    alert('Memindai Sidik Jari...');
+/**
+ * Melewati Pendaftaran Biometrik
+ */
+function lewatiBiometrik() {
     tutupLoginModal();
+}
+
+/**
+ * Bypass Mode Developer Cepat (Klik pada Icon Perisai Header Modal)
+ */
+function masukModeDeveloperCepat() {
+    bukaKunciDataAuth();
+    tutupLoginModal();
+    console.log('Mode Developer/Bypass Aktif.');
+}
+
+/**
+ * Membuka Overlay Kunci Data (Saldo & Transaksi)
+ */
+function bukaKunciDataAuth() {
+    const authLockOverlay = document.getElementById('auth-lock-overlay');
+    const txLockOverlay = document.getElementById('tx-lock-overlay');
+
+    if (authLockOverlay) authLockOverlay.classList.add('hidden');
+    if (txLockOverlay) txLockOverlay.classList.add('hidden');
 }
 
 // 4. Modal Arsip Bulanan & Detail
@@ -485,3 +703,248 @@ window.formatInputRibuan = function(input) {
 
 window.formatRupiahInput = window.formatInputRibuan;
 window.formatRupiahBensin = window.formatInputRibuan;
+
+function parseNominal(str) {
+    if (!str) return 0;
+    return parseFloat(str.replace(/\./g, '').replace(/,/g, '.')) || 0;
+  }
+
+  function getTodayDateString() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  // ==========================================
+  // 2. NAVIGASI BUKA MODAL FORM
+  // ==========================================
+  window.aksiBukaFormTabungan = function (tipe) {
+    // Sembunyikan modal pilihan utama
+    const modalPilihan = document.getElementById('modal-pilihan-tabungan');
+    if (modalPilihan) modalPilihan.classList.add('hidden');
+
+    const tglSkarang = getTodayDateString();
+
+    if (tipe === 'mutasi_masuk') {
+      const modal = document.getElementById('modal-form-mutasi-tabungan');
+      document.getElementById('form-mutasi-tabungan').reset();
+      document.getElementById('mutasi-tanggal').value = tglSkarang;
+      if (modal) modal.classList.remove('hidden');
+    } else if (tipe === 'transaksi_keluar') {
+      const modal = document.getElementById('modal-form-tarik-tabungan');
+      document.getElementById('form-tarik-tabungan').reset();
+      document.getElementById('tarik-tanggal').value = tglSkarang;
+      if (modal) modal.classList.remove('hidden');
+    } else if (tipe === 'atur_target') {
+      const modal = document.getElementById('modal-form-target-tabungan');
+      document.getElementById('form-target-tabungan').reset();
+      document.getElementById('target-tanggal').value = tglSkarang;
+      if (modal) modal.classList.remove('hidden');
+    }
+  };
+
+  // ==========================================
+  // 3. EKSEKUSI PENYIMPANAN FORM
+  // ==========================================
+
+  // A. SIMPAN MUTASI DANA
+  window.eksekusiSimpanMutasi = function (e) {
+    e.preventDefault();
+
+    const tanggal = document.getElementById('mutasi-tanggal').value;
+    const asal = document.getElementById('mutasi-asal').value;
+    const tujuan = document.getElementById('mutasi-tujuan').value;
+    const ket = document.getElementById('mutasi-ket-tabungan').value;
+    const nominalRaw = document.getElementById('mutasi-nominal-display').value;
+    const nominal = parseNominal(nominalRaw);
+
+    if (asal === tujuan) {
+      bukaTampilAlertKustom(
+        'Warning',
+        'Asal dan Tujuan mutasi tidak boleh sama!',
+        'warning'
+      );
+      return;
+    }
+
+    if (nominal <= 0) {
+      bukaTampilAlertKustom(
+        'Perhatian',
+        'Masukkan nominal mutasi yang valid!',
+        'warning'
+      );
+      return;
+    }
+
+    // TODO: Olah / simpan data mutasi ke database atau localStorage
+    console.log('Data Mutasi:', { tanggal, asal, tujuan, ket, nominal });
+
+    // Sembunyikan modal form
+    document
+      .getElementById('modal-form-mutasi-tabungan')
+      .classList.add('hidden');
+
+    // Tampilkan Alert Sukses
+    bukaTampilAlertKustom(
+      'Berhasil',
+      `Mutasi saldo sebesar Rp ${nominalRaw} berhasil disimpan.`,
+      'success'
+    );
+  };
+
+  // B. SIMPAN TARIK SALDO
+  window.eksekusiTarikSaldo = function (e) {
+    e.preventDefault();
+
+    const tanggal = document.getElementById('tarik-tanggal').value;
+    const sumber = document.getElementById('tarik-sumber-tabungan').value;
+    const ket = document.getElementById('tarik-ket-tabungan').value;
+    const nominalRaw = document.getElementById('tarik-nominal-display').value;
+    const nominal = parseNominal(nominalRaw);
+
+    if (nominal <= 0) {
+      bukaTampilAlertKustom(
+        'Perhatian',
+        'Masukkan nominal penarikan yang valid!',
+        'warning'
+      );
+      return;
+    }
+
+    // TODO: Olah / simpan data penarikan saldo
+    console.log('Data Tarik Saldo:', { tanggal, sumber, ket, nominal });
+
+    // Sembunyikan modal form
+    document
+      .getElementById('modal-form-tarik-tabungan')
+      .classList.add('hidden');
+
+    // Tampilkan Alert Sukses
+    bukaTampilAlertKustom(
+      'Berhasil',
+      `Penarikan saldo sebesar Rp ${nominalRaw} berhasil dicatat.`,
+      'success'
+    );
+  };
+
+  // C. SIMPAN TARGET TABUNGAN
+  window.eksekusiSimpanTarget = function (e) {
+    e.preventDefault();
+
+    const tanggal = document.getElementById('target-tanggal').value;
+    const targetUtamaRaw = document.getElementById(
+      'target-nominal-utama-display'
+    ).value;
+    const targetDaruratRaw = document.getElementById(
+      'target-nominal-darurat-display'
+    ).value;
+
+    const targetUtama = parseNominal(targetUtamaRaw);
+    const targetDarurat = parseNominal(targetDaruratRaw);
+
+    // TODO: Olah / simpan pembaruan target
+    console.log('Data Target Baru:', {
+      tanggal,
+      targetUtama,
+      targetDarurat,
+    });
+
+    // Sembunyikan modal form
+    document
+      .getElementById('modal-form-target-tabungan')
+      .classList.add('hidden');
+
+    // Tampilkan Alert Sukses
+    bukaTampilAlertKustom(
+      'Berhasil',
+      'Target batasan dana tabungan berhasil diperbarui!',
+      'success'
+    );
+  };
+
+  // ==========================================
+  // 4. LOGIK MODAL ALERT KUSTOM (tampilAlert)
+  // ==========================================
+  function bukaTampilAlertKustom(
+    judul,
+    pesan,
+    tipe = 'info' /* 'success' | 'warning' | 'danger' | 'info' */
+  ) {
+    const modal = document.getElementById('modal-tampilAlert');
+    const titleEl = document.getElementById('tampilAlert-title');
+    const msgEl = document.getElementById('tampilAlert-message');
+    const iconContainer = document.getElementById('tampilAlert-icon-container');
+    const iconEl = document.getElementById('tampilAlert-icon');
+
+    if (!modal) return;
+
+    // Set Teks
+    titleEl.innerText = judul;
+    msgEl.innerText = pesan;
+
+    // Reset Class Warna Icon
+    iconContainer.className =
+      'w-12 h-12 rounded-full flex items-center justify-center mx-auto border shadow-xs transition-all';
+    iconEl.className = 'fas text-xl';
+
+    // Konfigurasi Tema Icon Berdasarkan Tipe
+    if (tipe === 'success') {
+      iconContainer.classList.add(
+        'bg-emerald-50',
+        'border-emerald-200',
+        'text-emerald-500'
+      );
+      iconEl.classList.add('fa-check-circle');
+    } else if (tipe === 'warning') {
+      iconContainer.classList.add(
+        'bg-amber-50',
+        'border-amber-200',
+        'text-amber-500'
+      );
+      iconEl.classList.add('fa-exclamation-triangle');
+    } else if (tipe === 'danger') {
+      iconContainer.classList.add(
+        'bg-rose-50',
+        'border-rose-200',
+        'text-rose-500'
+      );
+      iconEl.classList.add('fa-times-circle');
+    } else {
+      // Info / Default
+      iconContainer.classList.add(
+        'bg-blue-50',
+        'border-blue-200',
+        'text-blue-500'
+      );
+      iconEl.classList.add('fa-info-circle');
+    }
+
+    // Tampilkan Modal dengan Efek Smooth
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      modal.classList.remove('opacity-0');
+      const panel = modal.firstElementChild;
+      if (panel) {
+        panel.classList.remove('scale-95');
+        panel.classList.add('scale-100');
+      }
+    }, 10);
+  }
+
+  function tutuptampilAlertKustom() {
+    const modal = document.getElementById('modal-tampilAlert');
+    if (!modal) return;
+
+    const panel = modal.firstElementChild;
+    if (panel) {
+      panel.classList.remove('scale-100');
+      panel.classList.add('scale-95');
+    }
+    modal.classList.add('opacity-0');
+
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 200);
+  }
